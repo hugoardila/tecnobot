@@ -1,0 +1,13 @@
+services:
+  tecnobot-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tecnobot-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:18082:80"
+    env_file:
+      - .env
+    volumes:
+      - ./app:/var/www/html

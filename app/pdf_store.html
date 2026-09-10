@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECNOXPERT - Tienda de PDFs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            display: flex;
+            background: var(--light);
+            border-bottom: 2px solid #e5e7eb;
+            padding: 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 20px 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .nav-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .categories {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .category-btn {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .category-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .category-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .pdfs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .pdf-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .pdf-card:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+        
+        .pdf-cover {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+        
+        .pdf-preview-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            color: var(--primary);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .pdf-preview-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .preview-modal .modal-content {
+            max-width: 900px;
+            padding: 20px;
+        }
+        
+        .pdf-viewer {
+            width: 100%;
+            height: 80vh;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f3f4f6;
+        }
+        
+        .pdf-content {
+            padding: 20px;
+        }
+        
+        .pdf-category {
+            display: inline-block;
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+        
+        .pdf-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .pdf-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .pdf-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .pdf-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .pdfs-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-btn {
+                padding: 15px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Tienda de PDFs</h1>
+            <p>Tutoriales y Guías Especializadas de TECNOXPERT</p>
+        </div>
+        
+        <div class="nav">
+            <button class="nav-btn active" onclick="showSection('catalog')">
+                <i class="fas fa-book"></i> Catálogo
+            </button>
+            <button class="nav-btn" onclick="showSection('request')">
+                <i class="fas fa-user-edit"></i> Solicitar PDF Personalizado
+            </button>
+        </div>
+        
+        <div class="content">
+            <!-- Sección de Catálogo -->
+            <div id="catalog-section">
+                <div class="categories" id="categories">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                
+                <div id="pdfs-container">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Cargando PDFs...
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección de Solicitud Personalizada -->
+            <div id="request-section" style="display: none;">
+                <h2>Solicitar PDF Personalizado 📝</h2>
+                <p style="color: #666; margin-bottom: 30px;">
+                    ¿Necesitas información específica? Solicita un PDF personalizado con el tema que necesites.
+                </p>
+                
+                <form id="custom-request-form">
+                    <div class="form-group">
+                        <label>Nombre Completo *</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Tema del PDF *</label>
+                        <input type="text" name="topic" placeholder="Ej: Configurar servidor Ubuntu" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Descripción Detallada *</label>
+                        <textarea name="description" rows="5" placeholder="Describe qué información específica necesitas..." required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Compra -->
+    <div class="modal" id="purchase-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Comprar PDF</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form id="purchase-form">
+                <div class="form-group">
+                    <label>Nombre Completo *</label>
+                    <input type="text" name="buyer_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" name="buyer_email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Método de Pago *</label>
+                    <select name="payment_method" id="payment_method" class="form-group input" required style="width: 100%; padding: 12px;">
+                        <option value="">Seleccionar...</option>
+                        <option value="paypal">💳 PayPal (Recomendado)</option>
+                        <option value="manual">📱 Pago Manual (Nequi/Transferencia)</option>
+                    </select>
+                </div>
+                
+                <div style="background: #f3f4f6; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <strong>Total a pagar:</strong>
+                    <span id="total-price" style="font-size: 1.5rem; color: var(--primary);">$0.00</span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-credit-card"></i> Comprar Ahora
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let currentPDF = null;
+        let allPDFs = [];
+        let currentCategory = null;
+        
+        // Cargar datos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCategories();
+            loadPDFs();
+        });
+        
+        function showSection(section) {
+            document.getElementById('catalog-section').style.display = section === 'catalog' ? 'block' : 'none';
+            document.getElementById('request-section').style.display = section === 'request' ? 'block' : 'none';
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        async function loadCategories() {
+            try {
+                const response = await fetch('api.php?action=categories');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                
+                if (result.success) {
+                    const container = document.getElementById('categories');
+                    container.innerHTML = '<button class="category-btn active" onclick="filterByCategory(null)">📚 Todos</button>';
+                    
+                    result.data.forEach(cat => {
+                        const btn = document.createElement('button');
+                        btn.className = 'category-btn';
+                        btn.innerHTML = `${cat.icon} ${cat.name}`;
+                        btn.onclick = () => filterByCategory(cat.id);
+                        container.appendChild(btn);
+                    });
+                }
+            } catch (error) {
+                console.error('Error cargando categorías:', error);
+                document.getElementById('categories').innerHTML = '<p style="color: red; padding: 20px;">Error al cargar categorías</p>';
+            }
+        }
+        
+        async function loadPDFs(categoryId = null) {
+            try {
+                const url = categoryId 
+                    ? `api.php?action=pdfs&category=${categoryId}`
+                    : 'api.php?action=pdfs';
+                    
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                
+                if (result.success) {
+                    allPDFs = result.data;
+                    displayPDFs(result.data);
+                } else {
+                    throw new Error(result.error || 'Error desconocido');
+                }
+            } catch (error) {
+                console.error('Error cargando PDFs:', error);
+                document.getElementById('pdfs-container').innerHTML = 
+                    `<div class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error al cargar los PDFs</h3>
+                        <p>${error.message}</p>
+                        <button class="btn btn-primary" onclick="loadPDFs()">
+                            <i class="fas fa-redo"></i> Reintentar
+                        </button>
+                    </div>`;
+            }
+        }
+        
+        function displayPDFs(pdfs) {
+            const container = document.getElementById('pdfs-container');
+            
+            if (pdfs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-book-open"></i>
+                        <h3>No hay PDFs disponibles</h3>
+                        <p>Próximamente agregaremos más contenido</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = '<div class="pdfs-grid"></div>';
+            const grid = container.querySelector('.pdfs-grid');
+            
+            pdfs.forEach(pdf => {
+                const card = document.createElement('div');
+                card.className = 'pdf-card';
+                card.onclick = () => openPurchaseModal(pdf);
+                
+                // Mostrar previsualización si es PDF, sino icono
+                const isPDF = pdf.file_path && pdf.file_path.endsWith('.pdf');
+                const previewContent = isPDF 
+                    ? `<iframe src="api.php?action=preview&file=${encodeURIComponent(pdf.file_path)}" style="width: 100%; height: 100%; border: none;"></iframe>`
+                    : `<i class="fas fa-file-pdf"></i>`;
+                
+                card.innerHTML = `
+                    <div class="pdf-cover">
+                        ${previewContent}
+                    </div>
+                    <div class="pdf-content">
+                        <div class="pdf-category">${pdf.category_icon || '📄'} ${pdf.category_name || 'General'}</div>
+                        <div class="pdf-title">${pdf.title}</div>
+                        <div class="pdf-description">${pdf.description || 'Sin descripción disponible'}</div>
+                        <div class="pdf-footer">
+                            <div class="pdf-price">$${parseFloat(pdf.price).toFixed(2)}</div>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Comprar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        function filterByCategory(categoryId) {
+            currentCategory = categoryId;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            loadPDFs(categoryId);
+        }
+        
+        function openPurchaseModal(pdf) {
+            currentPDF = pdf;
+            document.getElementById('total-price').textContent = `$${parseFloat(pdf.price).toFixed(2)}`;
+            document.getElementById('purchase-modal').classList.add('active');
+            document.getElementById('purchase-form').reset();
+        }
+        
+        function closeModal() {
+            document.getElementById('purchase-modal').classList.remove('active');
+            currentPDF = null;
+        }
+        
+        document.getElementById('purchase-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const paymentMethod = formData.get('payment_method');
+            
+            if (paymentMethod === 'paypal') {
+                // Procesar pago con PayPal
+                await processPayPalPayment();
+            } else if (paymentMethod === 'manual') {
+                // Pago manual
+                const data = {
+                    pdf_id: currentPDF.id,
+                    buyer_name: formData.get('buyer_name'),
+                    buyer_email: formData.get('buyer_email'),
+                    payment_method: 'manual',
+                    transaction_id: 'MANUAL_' + Date.now(),
+                    amount: currentPDF.price
+                };
+                
+                alert(`✅ Solicitud registrada!\n\nCompleta el pago:\n📱 Nequi: 3117024021\n🔄 Transferencia: Bancolombia 1234567890\n\nEnvía el comprobante a: admin@tecnoxpert.com`);
+                
+                try {
+                    const response = await fetch('api.php?action=purchase', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        alert('✅ Compra exitosa! Tu link de descarga ha sido enviado por email.');
+                        closeModal();
+                    } else {
+                        alert('❌ Error: ' + result.error);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('❌ Error al procesar la compra');
+                }
+            }
+        });
+        
+        async function processPayPalPayment() {
+            try {
+                // Crear orden de PayPal
+                const response = await fetch('api.php?action=create-paypal-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pdf_id: currentPDF.id,
+                        amount: currentPDF.price
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Guardar pdf_id para cuando regrese
+                    sessionStorage.setItem('paypal_pdf_id', currentPDF.id);
+                    
+                    // Redirigir a PayPal
+                    window.location.href = result.approve_url;
+                } else {
+                    alert('❌ Error: ' + (result.error || 'Error al iniciar pago PayPal'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error al procesar pago con PayPal');
+            }
+        }
+        
+        document.getElementById('custom-request-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {
+                name: formData.get('name'),
+                email: formData.get('email'),
+                topic: formData.get('topic'),
+                description: formData.get('description')
+            };
+            
+            try {
+                const response = await fetch('api.php?action=custom-request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.has_similar) {
+                        // Mostrar PDFs similares encontrados
+                        let message = '✅ ' + result.message + '\n\n📚 PDFs similares encontrados:\n\n';
+                        result.similar_pdfs.forEach((pdf, index) => {
+                            message += `${index + 1}. ${pdf.title}\n   Precio: $${parseFloat(pdf.price).toFixed(2)}\n\n`;
+                        });
+                        message += '\n¿Deseas ver estos PDFs?';
+                        
+                        if (confirm(message)) {
+                            // Cambiar a catálogo y filtrar
+                            showSection('catalog');
+                            // Hacer scroll a los PDFs
+                            setTimeout(() => {
+                                document.getElementById('categories').scrollIntoView({ behavior: 'smooth' });
+                            }, 300);
+                        }
+                    } else {
+                        alert('✅ ' + result.message);
+                    }
+                    e.target.reset();
+                } else {
+                    alert('❌ Error: ' + result.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Error al enviar la solicitud');
+            }
+        });
+        
+        // Cerrar modal al hacer click fuera
+        document.getElementById('purchase-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'purchase-modal') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+

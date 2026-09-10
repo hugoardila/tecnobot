@@ -1,0 +1,9 @@
+tmp/
+vendor/
+uploads/
+pdfs/
+*.db
+*.sqlite*
+*.log
+.env
+.env.*

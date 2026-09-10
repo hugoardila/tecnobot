@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>TecnoBOT - TECNOXPERT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: min(90vh, 900px);
+            height: min(90dvh, 900px);
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 0 0 auto;
+        }
+
+        .chat-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .chat-header-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .chat-header-info p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chat-messages {
+            flex: 1;
+            min-height: 0;
+            padding: 20px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            background: #f8f9fa;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 15px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.bot {
+            justify-content: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 15px;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user .message-content {
+            background: #e9ecef;
+            color: #333;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            gap: 10px;
+            flex: 0 0 auto;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .chat-input input {
+            flex: 1;
+            min-width: 0;
+            min-height: 50px;
+            padding: 12px 18px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .chat-input button {
+            width: 50px;
+            height: 50px;
+            flex: 0 0 50px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            touch-action: manipulation;
+            font-size: 1.05rem;
+        }
+
+        .chat-input button:disabled {
+            cursor: wait;
+            opacity: 0.65;
+        }
+
+        .chat-input button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 24px;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Tienda de PDFs temporalmente oculta - en desarrollo */
+        .pdf-store-btn {
+            display: none !important;
+            /* position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+            z-index: 1000; */
+        }
+        
+        .pdf-store-btn:hover {
+            /* transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.6); */
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            max-width: 70px;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                min-height: 100%;
+                overflow: hidden;
+            }
+
+            body {
+                display: block;
+                padding: 0;
+            }
+
+            .chat-container {
+                width: 100%;
+                max-width: none;
+                height: var(--chat-viewport-height, 100dvh);
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .chat-header {
+                min-height: 124px;
+                padding: calc(58px + env(safe-area-inset-top, 0px)) 14px 12px;
+            }
+
+            .chat-header img {
+                width: 42px;
+                height: 42px;
+            }
+
+            .chat-header-info h2 {
+                font-size: 1.2rem;
+            }
+
+            .chat-messages {
+                padding: 14px 12px;
+                scroll-padding-bottom: 12px;
+            }
+
+            .chat-input {
+                padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+            }
+
+            .back-button {
+                top: calc(8px + env(safe-area-inset-top, 0px));
+                left: calc(8px + env(safe-area-inset-left, 0px));
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                z-index: 20;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-button" id="backBtn">
+        <i class="fas fa-arrow-left"></i>
+        <span id="backText">Volver</span>
+    </a>
+
+    <button class="back-button" onclick="toggleLanguage()" style="left: auto; right: 20px;">
+        <i class="fas fa-language"></i>
+        <span id="langText">ES</span>
+    </button>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="../img/logo.png" alt="TecnoBOT">
+            <div class="chat-header-info">
+                <h2>🤖 TecnoBOT</h2>
+                <p id="headerSubtitle">Asistente comercial de TECNOXPERT</p>
+            </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">
+                <div class="message-content" id="welcomeMsg">
+                    ¡Hola! 👋 Soy TecnoBOT, tu asistente virtual de TECNOXPERT. ¿En qué puedo ayudarte hoy?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input" id="chatComposer">
+            <input type="text" id="messageInput" placeholder="Escribe tu mensaje..." autocomplete="off" enterkeyhint="send" aria-label="Mensaje para TecnoBOT">
+            <button type="button" id="sendButton" onclick="sendMessage()" aria-label="Enviar mensaje">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        let currentLang = 'es';
+        let isSending = false;
+        
+        // Array para mantener el historial de conversación
+        let conversationHistory = [];
+
+        // Traducciones
+        const translations = {
+            es: {
+                back: 'Volver',
+                subtitle: 'Asistente comercial de TECNOXPERT',
+                welcome: '¡Hola! 👋 Soy TecnoBOT, tu asistente virtual de TECNOXPERT. ¿En qué puedo ayudarte hoy?',
+                placeholder: 'Escribe tu mensaje...',
+                responses: {
+                    'hola': '¡Hola! 😊 ¿Cómo puedo ayudarte?',
+                    'hello': '¡Hola! 😊 ¿Cómo puedo ayudarte?',
+                    'hi': '¡Hola! 😊 ¿Cómo puedo ayudarte?',
+                    'servicios': 'Ofrecemos:\n\n• Reparación de computadores y móviles\n• Desarrollo web y aplicaciones\n• Sistemas CCTV\n• Marketing digital\n• Bots y automatizaciones\n• WhatsApp Commerce\n• Soporte técnico\n\n¿Te interesa alguno en particular?',
+                    'services': 'Ofrecemos:\n\n• Reparación de computadores y móviles\n• Desarrollo web y aplicaciones\n• Sistemas CCTV\n• Marketing digital\n• Bots y automatizaciones\n• WhatsApp Commerce\n• Soporte técnico\n\n¿Te interesa alguno en particular?',
+                    'precios': 'Los precios varían según el servicio. Te recomiendo contactar directamente al equipo:\n📞 3117024021\n📧 admin@tecnoxpert.com',
+                    'prices': 'Los precios varían según el servicio. Te recomiendo contactar directamente al equipo:\n📞 3117024021\n📧 admin@tecnoxpert.com',
+                    'contacto': '📞 Teléfono: 3117024021\n📧 Email: admin@tecnoxpert.com\n📍 Dirección: Calle 2 # 2-32, Pitalito, Huila\n\n¿Prefieres que te contactemos por WhatsApp?',
+                    'contact': '📞 Teléfono: 3117024021\n📧 Email: admin@tecnoxpert.com\n📍 Dirección: Calle 2 # 2-32, Pitalito, Huila\n\n¿Prefieres que te contactemos por WhatsApp?',
+                    'horario': 'Nuestro horario de atención es:\n🕐 Lunes a Viernes: 8:00 AM - 6:00 PM\n🕐 Sábados: 9:00 AM - 1:00 PM\n\n¿En qué más puedo ayudarte?',
+                    'schedule': 'Nuestro horario de atención es:\n🕐 Lunes a Viernes: 8:00 AM - 6:00 PM\n🕐 Sábados: 9:00 AM - 1:00 PM\n\n¿En qué más puedo ayudarte?',
+                    'ubicacion': 'Estamos ubicados en:\n📍 Calle 2 # 2-32, Pitalito, Huila, Colombia\n\n¿Necesitas indicaciones?',
+                    'location': 'Estamos ubicados en:\n📍 Calle 2 # 2-32, Pitalito, Huila, Colombia\n\n¿Necesitas indicaciones?',
+                    'default': 'Interesante pregunta. Para una respuesta más precisa, te recomiendo contactar directamente:\n📞 3117024021\n\n¿Hay algo más en lo que pueda ayudarte?'
+                }
+            },
+            en: {
+                back: 'Back',
+                subtitle: 'TECNOXPERT business assistant',
+                welcome: 'Hello! 👋 I\'m TecnoBOT, your TECNOXPERT virtual assistant. How can I help you today?',
+                placeholder: 'Type your message...',
+                responses: {
+                    'hello': 'Hello! 😊 How can I help you?',
+                    'hi': 'Hi! 😊 How can I help you?',
+                    'hola': 'Hello! 😊 How can I help you?',
+                    'services': 'We offer:\n\n• Computer and mobile repair\n• Web development and applications\n• CCTV systems\n• Digital marketing\n• Bots and automations\n• WhatsApp Commerce\n• Technical support\n\nAre you interested in any particular service?',
+                    'servicios': 'We offer:\n\n• Computer and mobile repair\n• Web development and applications\n• CCTV systems\n• Digital marketing\n• Bots and automations\n• WhatsApp Commerce\n• Technical support\n\nAre you interested in any particular service?',
+                    'prices': 'Prices vary by service. I recommend contacting the team directly:\n📞 3117024021\n📧 admin@tecnoxpert.com',
+                    'precios': 'Prices vary by service. I recommend contacting the team directly:\n📞 3117024021\n📧 admin@tecnoxpert.com',
+                    'contact': '📞 Phone: 3117024021\n📧 Email: admin@tecnoxpert.com\n📍 Address: Calle 2 # 2-32, Pitalito, Huila\n\nWould you prefer we contact you via WhatsApp?',
+                    'contacto': '📞 Phone: 3117024021\n📧 Email: admin@tecnoxpert.com\n📍 Address: Calle 2 # 2-32, Pitalito, Huila\n\nWould you prefer we contact you via WhatsApp?',
+                    'schedule': 'Our business hours are:\n🕐 Monday to Friday: 8:00 AM - 6:00 PM\n🕐 Saturday: 9:00 AM - 1:00 PM\n\nWhat else can I help you with?',
+                    'horario': 'Our business hours are:\n🕐 Monday to Friday: 8:00 AM - 6:00 PM\n🕐 Saturday: 9:00 AM - 1:00 PM\n\nWhat else can I help you with?',
+                    'location': 'We are located at:\n📍 Calle 2 # 2-32, Pitalito, Huila, Colombia\n\nDo you need directions?',
+                    'ubicacion': 'We are located at:\n📍 Calle 2 # 2-32, Pitalito, Huila, Colombia\n\nDo you need directions?',
+                    'default': 'Interesting question. For a more precise answer, I recommend contacting directly:\n📞 3117024021\n\nIs there anything else I can help you with?'
+                }
+            }
+        };
+
+        translations.es.welcome = 'Hola. Soy TecnoBOT y te ayudo con servicios, portafolio, soporte, contacto y cotizaciones de TECNOXPERT. Que necesitas hoy?';
+        translations.en.welcome = 'Hello. I can help you with TECNOXPERT services, portfolio, support, contact details and quotations. What do you need today?';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            document.getElementById('backText').textContent = translations[currentLang].back;
+            document.getElementById('langText').textContent = currentLang.toUpperCase();
+            document.getElementById('headerSubtitle').textContent = translations[currentLang].subtitle;
+            document.getElementById('welcomeMsg').textContent = translations[currentLang].welcome;
+            document.getElementById('messageInput').placeholder = translations[currentLang].placeholder;
+        }
+
+        updateLanguage();
+
+        messageInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        document.getElementById('chatComposer').addEventListener('click', (event) => {
+            if (event.target !== sendButton && !isSending) {
+                messageInput.focus({ preventScroll: true });
+            }
+        });
+
+        function scrollChatToLatest() {
+            window.requestAnimationFrame(() => {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        function syncChatViewport() {
+            const height = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+            document.documentElement.style.setProperty('--chat-viewport-height', `${Math.round(height)}px`);
+            scrollChatToLatest();
+        }
+
+        syncChatViewport();
+        window.addEventListener('resize', syncChatViewport, { passive: true });
+        window.addEventListener('orientationchange', syncChatViewport, { passive: true });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', syncChatViewport, { passive: true });
+            window.visualViewport.addEventListener('scroll', syncChatViewport, { passive: true });
+        }
+        messageInput.addEventListener('focus', () => window.setTimeout(syncChatViewport, 120));
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '' || isSending) return;
+
+            isSending = true;
+            sendButton.disabled = true;
+
+            // Agregar mensaje del usuario
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Agregar mensaje del usuario al historial
+            conversationHistory.push({ role: 'user', content: message });
+
+            // Mostrar indicador de escritura
+            showTyping();
+
+            try {
+                // Llamar a OpenAI para obtener respuesta conversacional
+                const response = await getBotResponse();
+                hideTyping();
+                
+                // Verificar si la respuesta contiene un comando de generación de PDF
+                addMessage(response, 'bot');
+                
+                // Agregar respuesta del bot al historial
+                conversationHistory.push({ role: 'assistant', content: response });
+            } catch (error) {
+                hideTyping();
+                console.error('Error:', error);
+                const errorMsg = currentLang === 'es' 
+                    ? 'Oops, parece que hubo un problema. ¿Puedes intentar nuevamente? 😅'
+                    : 'Oops, there seems to be a problem. Can you try again? 😅';
+                addMessage(errorMsg, 'bot');
+            } finally {
+                isSending = false;
+                sendButton.disabled = false;
+            }
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = text;
+            
+            messageDiv.appendChild(contentDiv);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            scrollChatToLatest();
+        }
+
+        async function getBotResponse() {
+            // Prompt del sistema según el idioma actual
+            const systemPromptES = `Eres TecnoBOT, el asistente virtual de TECNOXPERT, una empresa especializada en soluciones tecnológicas.
+
+INFORMACIÓN DE LA EMPRESA:
+• Nombre: TECNOXPERT
+• Teléfono: 3117024021
+• Email: admin@tecnoxpert.com
+• Dirección: Calle 2 # 2-32, Pitalito, Huila, Colombia
+• Horario: Lunes a Viernes 8:00 AM - 6:00 PM, Sábados 9:00 AM - 1:00 PM
+
+SERVICIOS QUE OFRECEMOS:
+1. Reparación de computadores y móviles
+2. Desarrollo web y aplicaciones
+3. Sistemas CCTV (cámaras de seguridad)
+4. Marketing digital
+5. Bots y automatizaciones
+6. WhatsApp Commerce
+7. Soporte técnico
+
+✨ NUEVA FUNCIONALIDAD: GENERACIÓN DE PDFs PERSONALIZADOS
+Cuando un cliente pida ayuda con tutoriales, guías, información específica o documentación técnica:
+1. Hazle preguntas específicas sobre qué necesita exactamente
+2. Pregunta detalles como: nivel de complejidad, tecnologías involucradas, casos de uso, objetivos
+3. Una vez tengas toda la info, di "Perfecto! Ya tengo toda la información. ¿Quieres que genere tu PDF personalizado?"
+4. Si dice sí, usa el formato especial: **GENERAR_PDF:{título}|{descripción}|{categoría}**
+   - Ejemplo: **GENERAR_PDF:Guía de configuración Ubuntu Server|Tutorial completo para configurar servidor Ubuntu 22.04 con Docker, Nginx y SSL|Tutoriales**
+5. Las categorías disponibles son: Tutoriales, Documentación Técnica, Guías de Configuración, Casos de Uso
+
+INSTRUCCIONES:
+- Responde de forma natural, conversacional y amigable, como un compañero en WhatsApp
+- Usa expresiones coloquiales como "claro", "dale", "jajaja", "obvio"
+- Usa emojis de forma natural y espontánea
+- Mantén el tono informal pero profesional
+- Si preguntan por servicios, da información detallada y útil
+- Si preguntan por precios, menciona que varían según el servicio y ofrece contactar
+- Si preguntan por contacto, proporciona la información completa
+- Cuando un cliente pida ayuda técnica específica, guíalo con preguntas para generar PDF
+- Si no sabes algo, admítelo y ofrece ayudar de otra manera
+- NUNCA menciones que eres una IA o bot
+- Responde SIEMPRE en español`;
+
+            const systemPromptEN = `You are TecnoBOT, the virtual assistant of TECNOXPERT, a company specialized in technological solutions.
+
+COMPANY INFORMATION:
+• Name: TECNOXPERT
+• Phone: 3117024021
+• Email: admin@tecnoxpert.com
+• Address: Calle 2 # 2-32, Pitalito, Huila, Colombia
+• Schedule: Monday to Friday 8:00 AM - 6:00 PM, Saturday 9:00 AM - 1:00 PM
+
+SERVICES WE OFFER:
+1. Computer and mobile repair
+2. Web development and applications
+3. CCTV systems (security cameras)
+4. Digital marketing
+5. Bots and automations
+6. WhatsApp Commerce
+7. Technical support
+
+INSTRUCTIONS:
+- Respond in a natural, conversational, and friendly way, like a WhatsApp friend
+- Use colloquial expressions like "sure", "got it", "haha", "of course"
+- Use emojis naturally and spontaneously
+- Keep an informal but professional tone
+- If they ask about services, provide detailed and useful information
+- If they ask about prices, mention they vary by service and offer to contact
+- If they ask for contact info, provide complete information
+- If you don't know something, admit it and offer to help in another way
+- NEVER mention that you are an AI or bot
+- ALWAYS respond in English`;
+
+            const systemPrompt = currentLang === 'es'
+                ? 'Responde solo sobre TECNOXPERT, sus servicios, portafolio, soporte, contacto, horarios y cotizaciones.'
+                : 'Answer only about TECNOXPERT, its services, portfolio, support, contact details, schedule and quotations.';
+
+            try {
+                // Llamar al endpoint del backend que maneja OpenAI de forma segura
+                const response = await fetch('api.php?action=chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: conversationHistory,
+                        systemPrompt: systemPrompt,
+                        language: currentLang
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Error al obtener respuesta');
+                }
+                
+                return data.response.trim();
+                
+            } catch (error) {
+                console.error('Error calling OpenAI:', error);
+                throw error;
+            }
+        }
+
+        function showTyping() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot';
+            typingDiv.id = 'typingIndicator';
+            
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator active';
+            indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            
+            typingDiv.appendChild(indicator);
+            chatMessages.appendChild(typingDiv);
+            scrollChatToLatest();
+        }
+
+        function hideTyping() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        async function generatePDFFromChat(title, description, category) {
+            try {
+                // Mostrar mensaje de que se está generando
+                addMessage('🔄 Generando tu PDF personalizado con contenido completo...', 'bot');
+                
+                // Buscar categoría por nombre para obtener el ID
+                const catResponse = await fetch('api.php?action=categories');
+                const catData = await catResponse.json();
+                let categoryId = 1; // Default a Tutoriales
+                
+                if (catData.success && catData.data) {
+                    const matchedCat = catData.data.find(cat => 
+                        cat.name.toLowerCase() === category.toLowerCase()
+                    );
+                    if (matchedCat) {
+                        categoryId = matchedCat.id;
+                    }
+                }
+                
+                // Generar contenido completo con OpenAI
+                const contentResponse = await generatePDFContent(title, description, category);
+                
+                // Crear el contenido HTML del PDF con el contenido completo
+                const pdfContent = generatePDFHTML(title, description, contentResponse);
+                
+                // Guardar el PDF
+                const timestamp = Date.now();
+                const filename = `pdfs/custom_chat_${timestamp}.html`;
+                
+                // Enviar al servidor para guardar
+                const response = await fetch('api.php?action=generate-from-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        category_id: categoryId,
+                        content: pdfContent,
+                        file_path: filename
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const priceMsg = currentLang === 'es'
+                        ? `✅ ¡PDF generado exitosamente!\n\n📄 Título: ${title}\n💰 Precio: $${result.price || '15.00'}\n\n¿Deseas comprarlo ahora?`
+                        : `✅ PDF generated successfully!\n\n📄 Title: ${title}\n💰 Price: $${result.price || '15.00'}\n\nDo you want to purchase it now?`;
+                    
+                    if (confirm(priceMsg)) {
+                        // Tienda de PDFs temporalmente en desarrollo
+                        addMessage(currentLang === 'es' 
+                            ? '⏳ La tienda de PDFs está en desarrollo. Pronto estará disponible. Por ahora, el PDF se ha guardado en el sistema.' 
+                            : '⏳ The PDF store is under development. It will be available soon. For now, the PDF has been saved in the system.', 'bot');
+                        // window.location.href = 'pdf_store.html'; // Comentado temporalmente
+                    }
+                } else {
+                    console.error('API error:', result);
+                    addMessage('❌ Hubo un error al generar el PDF: ' + (result.error || 'Error desconocido'), 'bot');
+                }
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                addMessage('❌ Hubo un error al generar el PDF: ' + error.message, 'bot');
+            }
+        }
+        
+        async function generatePDFContent(title, description, category) {
+            try {
+                // Llamar al endpoint del backend que maneja OpenAI de forma segura
+                const response = await fetch('api.php?action=generate-content', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description,
+                        category: category
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`Error del servidor: ${error}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.error || 'Error al generar contenido');
+                }
+                
+                return data.content;
+                
+            } catch (error) {
+                console.error('Error generating content:', error);
+                return '<p>Error al generar contenido. El PDF se ha creado con información básica.</p>';
+            }
+        }
+        
+        function generatePDFHTML(title, description, fullContent = '') {
+            const dateStr = new Date().toLocaleDateString();
+            const year = new Date().getFullYear();
+            const escapedTitle = escapeHtml(title);
+            const escapedDesc = escapeHtml(description);
+            
+            // Crear HTML base
+            return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>TECNOXPERT - Guía Personalizada</title>
+    <style>
+        @page { margin: 2cm; }
+        body { font-family: Arial, sans-serif; color: #333; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; margin: -2cm -2cm 30px -2cm; text-align: center; }
+        h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+        h2 { color: #764ba2; margin-top: 30px; }
+        h3 { color: #667eea; margin-top: 20px; }
+        .content { padding: 20px 0; }
+        code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        pre { background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        .footer { position: fixed; bottom: 0; text-align: center; width: 100%; font-size: 10px; color: #666; border-top: 1px solid #ddd; padding-top: 10px; }
+        ul, ol { margin-left: 20px; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>TECNOXPERT</h1>
+        <p>Soluciones Tecnológicas</p>
+    </div>
+    <div class="content">
+        <h1>${escapedTitle}</h1>
+        <p><strong>${escapedDesc}</strong></p>
+        ${fullContent ? fullContent : '<p>Contenido en desarrollo...</p>'}
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+        <p><em>PDF generado personalizado el ${dateStr}</em></p>
+    </div>
+    <div class="footer">
+        <p>TECNOXPERT - Calle 2 # 2-32, Pitalito, Huila | 3117024021 | admin@tecnoxpert.com</p>
+        <p>© ${year} TECNOXPERT. Todos los derechos reservados.</p>
+    </div>
+</body>
+</html>`;
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+    </script>
+    
+    <!-- Botón flotante para ir a la tienda de PDFs - TEMPORALMENTE OCULTO (en desarrollo) -->
+    <!-- <a href="pdf_store.html" class="pdf-store-btn">
+        <i class="fas fa-book"></i>
+        <span>📚 Tienda de PDFs</span>
+    </a> -->
+</body>
+</html>
