@@ -29,3 +29,12 @@ El repositorio es una copia sanitizada y portable. El despliegue productivo debe
 - Base de datos `pdfs_store.db`
 - PDFs y cargas de usuarios
 - Directorios `vendor`, `tmp` y respaldos
+
+## Flujo de desarrollo
+
+1. Configura `.env` con valores de prueba.
+2. Ejecuta `docker compose up --build`.
+3. Comprueba la respuesta del bot y los endpoints desde el puerto local.
+4. Valida los flujos de pago únicamente en sandbox antes de desplegar.
+
+Las respuestas generadas por IA deben mantenerse bajo revisión del responsable del servicio y las credenciales deben llegar únicamente desde variables protegidas.
